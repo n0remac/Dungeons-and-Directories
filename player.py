@@ -17,49 +17,36 @@ class Player(GameObject):
 
     def setup(self):
         # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
+        self.player_sprite = arcade.Sprite("human.png",
+                                           SPRITE_SCALING_PLAYER*10)
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
 
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player_sprite)
         
-    def on_key_press(self, key, modifiers, physics_engine):
+    def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
+        if key == arcade.key.W:
             self.up_pressed = True
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.S:
             self.down_pressed = True
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.A:
             self.left_pressed = True
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.D:
             self.right_pressed = True
-        elif key == arcade.key.SPACE:
-            bullet = arcade.SpriteSolidColor(9, 9, arcade.color.RED)
-            bullet.position = self.player_sprite.position
-            bullet.center_x += 30
-            self.bullet_list.append(bullet)
-            physics_engine.add_sprite(bullet,
-                                           mass=0.2,
-                                           damping=1.0,
-                                           friction=0.6,
-                                           collision_type="bullet")
-            force = (3000, 0)
-            physics_engine.apply_force(bullet, force)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
+        if key == arcade.key.W:
             self.up_pressed = False
-        elif key == arcade.key.DOWN:
+        elif key == arcade.key.S:
             self.down_pressed = False
-        elif key == arcade.key.LEFT:
+        elif key == arcade.key.A:
             self.left_pressed = False
-        elif key == arcade.key.RIGHT:
+        elif key == arcade.key.D:
             self.right_pressed = False
 
     def on_update(self, physics_engine, delta_time):
@@ -82,9 +69,6 @@ class Player(GameObject):
         elif self.right_pressed and not self.left_pressed:
             force = (PLAYER_MOVE_FORCE, 0)
             physics_engine.apply_force(self.player_sprite, force)
-
-        # --- Move items in the physics engine
-        physics_engine.step()
     
     def on_draw(self):
         """ Draw everything """

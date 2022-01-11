@@ -212,7 +212,20 @@ class MyWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        self.player.on_key_press(key, modifiers, self.physics_engine)
+        self.player.on_key_press(key, modifiers)
+
+        if key == arcade.key.SPACE:
+            bullet = arcade.SpriteSolidColor(9, 9, arcade.color.RED)
+            bullet.position = self.player.player_sprite.position
+            bullet.center_x += 30
+            self.bullet_list.append(bullet)
+            self.physics_engine.add_sprite(bullet,
+                                           mass=0.2,
+                                           damping=1.0,
+                                           friction=0.6,
+                                           collision_type="bullet")
+            force = (3000, 0)
+            self.physics_engine.apply_force(bullet, force)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
@@ -234,7 +247,7 @@ class MyWindow(arcade.Window):
         self.bullet_list.draw()
         self.rock_list.draw()
         self.gem_list.draw()
-        self.player.draw()
+        self.player.on_draw()
 
 
 def main():
