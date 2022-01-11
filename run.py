@@ -9,7 +9,7 @@ import arcade
 from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 from constants import *
-
+from player import Player
 
 class MyWindow(arcade.Window):
     """ Main Window """
@@ -19,36 +19,24 @@ class MyWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.AMAZON)
 
-        self.player_list = None
+        self.player = Player()
+
         self.wall_list = None
-        self.bullet_list = None
         self.rock_list = None
         self.gem_list = None
-        self.player_sprite = None
-        self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
-        # Track the current state of what key is pressed
-        self.left_pressed = False
-        self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
+        self.bullet_list = None
+        self.physics_engine: Optional[PymunkPhysicsEngine] = None
 
     def setup(self):
         """ Set up everything """
+        self.player.setup()
+
         # Create the sprite lists
-        self.player_list = arcade.SpriteList()
         self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.rock_list = arcade.SpriteList()
         self.gem_list = arcade.SpriteList()
-
-        # Set up the player
-        self.player_sprite = arcade.Sprite(":resources:images/animated_characters/female_person/"
-                                           "femalePerson_idle.png",
-                                           SPRITE_SCALING_PLAYER)
-        self.player_sprite.center_x = 250
-        self.player_sprite.center_y = 250
-        self.player_list.append(self.player_sprite)
 
         # Set up the walls
         for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
@@ -144,7 +132,7 @@ class MyWindow(arcade.Window):
         # Friction is between two objects in contact. It is important to remember
         # in top-down games that friction moving along the 'floor' is controlled
         # by damping.
-        self.physics_engine.add_sprite(self.player_sprite,
+        self.physics_engine.add_sprite(self.player.player_sprite,
                                        friction=0.6,
                                        moment_of_inertia=PymunkPhysicsEngine.MOMENT_INF,
                                        damping=0.01,
@@ -185,9 +173,9 @@ class MyWindow(arcade.Window):
         self.bullet_list.append(bullet)
 
         # Position the bullet at the player's current location
-        start_x = self.player_sprite.center_x
-        start_y = self.player_sprite.center_y
-        bullet.position = self.player_sprite.position
+        start_x = self.player.player_sprite.center_x
+        start_y = self.player.player_sprite.center_y
+        bullet.position = self.player.player_sprite.position
 
         # Get from the mouse the destination location for the bullet
         # IMPORTANT! If you have a scrolling screen, you will also need
@@ -203,7 +191,7 @@ class MyWindow(arcade.Window):
         angle = math.atan2(y_diff, x_diff)
 
         force = [math.cos(angle), math.sin(angle)]
-        size = max(self.player_sprite.width, self.player_sprite.height) / 2
+        size = max(self.player.player_sprite.width, self.player.player_sprite.height) / 2
 
         bullet.center_x += size * force[0]
         bullet.center_y += size * force[1]
@@ -224,59 +212,17 @@ class MyWindow(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed. """
 
-        if key == arcade.key.UP:
-            self.up_pressed = True
-        elif key == arcade.key.DOWN:
-            self.down_pressed = True
-        elif key == arcade.key.LEFT:
-            self.left_pressed = True
-        elif key == arcade.key.RIGHT:
-            self.right_pressed = True
-        elif key == arcade.key.SPACE:
-            bullet = arcade.SpriteSolidColor(9, 9, arcade.color.RED)
-            bullet.position = self.player_sprite.position
-            bullet.center_x += 30
-            self.bullet_list.append(bullet)
-            self.physics_engine.add_sprite(bullet,
-                                           mass=0.2,
-                                           damping=1.0,
-                                           friction=0.6,
-                                           collision_type="bullet")
-            force = (3000, 0)
-            self.physics_engine.apply_force(bullet, force)
+        self.player.on_key_press(key, modifiers, self.physics_engine)
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key. """
 
-        if key == arcade.key.UP:
-            self.up_pressed = False
-        elif key == arcade.key.DOWN:
-            self.down_pressed = False
-        elif key == arcade.key.LEFT:
-            self.left_pressed = False
-        elif key == arcade.key.RIGHT:
-            self.right_pressed = False
+        self.player.on_key_release(key, modifiers)
 
     def on_update(self, delta_time):
         """ Movement and game logic """
 
-        # Calculate speed based on the keys pressed
-        self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
-
-        if self.up_pressed and not self.down_pressed:
-            force = (0, PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        elif self.down_pressed and not self.up_pressed:
-            force = (0, -PLAYER_MOVE_FORCE)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        if self.left_pressed and not self.right_pressed:
-            self.player_sprite.change_x = -MOVEMENT_SPEED
-            force = (-PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
-        elif self.right_pressed and not self.left_pressed:
-            force = (PLAYER_MOVE_FORCE, 0)
-            self.physics_engine.apply_force(self.player_sprite, force)
+        self.player.on_update(self.physics_engine, delta_time)
 
         # --- Move items in the physics engine
         self.physics_engine.step()
@@ -288,7 +234,7 @@ class MyWindow(arcade.Window):
         self.bullet_list.draw()
         self.rock_list.draw()
         self.gem_list.draw()
-        self.player_list.draw()
+        self.player.draw()
 
 
 def main():
