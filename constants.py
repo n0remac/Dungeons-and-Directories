@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 SCREEN_TITLE = "Dungeons and Directories"
 SPRITE_SCALING_PLAYER = 0.5
 MOVEMENT_SPEED = 5
