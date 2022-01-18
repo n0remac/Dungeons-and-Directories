@@ -1,12 +1,6 @@
-import math
 import arcade
-from typing import Optional
-from arcade.pymunk_physics_engine import PymunkPhysicsEngine
-from constants.screen import WIDTH, HEIGHT, TITLE
-from game_objects import Player
-from game_objects import Level
-from managers import Physics
 from managers import MyWindow
+from constants.screen import WIDTH, HEIGHT, TITLE
 
 def main():
     """Main function"""

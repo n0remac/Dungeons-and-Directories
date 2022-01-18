@@ -1,6 +1,6 @@
 import arcade
 from .game_object import GameObject
-from constants import *
+from constants.base import SPRITE_SCALING_PLAYER, PLAYER_MOVE_FORCE, MOVEMENT_SPEED
 
 
 class Player(GameObject):
@@ -18,7 +18,7 @@ class Player(GameObject):
 
     def setup(self):
         # Set up the player
-        self.player_sprite = arcade.Sprite("human.png", SPRITE_SCALING_PLAYER * 10)
+        self.player_sprite = arcade.Sprite("resources/human.png", SPRITE_SCALING_PLAYER * 10)
         self.player_sprite.center_x = 250
         self.player_sprite.center_y = 250
 
