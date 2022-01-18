@@ -1,5 +1,5 @@
 import arcade
-from game_object import GameObject
+from .game_object import GameObject
 from constants import *
 
 
