@@ -2,7 +2,7 @@
 
 A top-down dungeon crawler with a map generated based on a folder structure on you computer.
 
-# setup
+## Setup
 Set up virtual env:  
 `python3 -m venv venv`  
 Activate it:  
@@ -10,5 +10,5 @@ Activate it:
 Install requirements:  
 `pip install -r requirements.txt`
 
-# Run game
+## Run game
 `python run.py`
