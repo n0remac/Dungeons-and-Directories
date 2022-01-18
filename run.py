@@ -1,15 +1,10 @@
-"""
-Example of Pymunk Physics Engine
-
-Top-down
-"""
 import math
-import random
 import arcade
 from typing import Optional
 from arcade.pymunk_physics_engine import PymunkPhysicsEngine
 from constants import *
 from player import Player
+from level import Level
 
 class MyWindow(arcade.Window):
     """ Main Window """
@@ -20,10 +15,7 @@ class MyWindow(arcade.Window):
         arcade.set_background_color(arcade.color.AMAZON)
 
         self.player = Player()
-
-        self.wall_list = None
-        self.rock_list = None
-        self.gem_list = None
+        self.level = Level()
 
         self.bullet_list = None
         self.physics_engine: Optional[PymunkPhysicsEngine] = None
@@ -31,62 +23,9 @@ class MyWindow(arcade.Window):
     def setup(self):
         """ Set up everything """
         self.player.setup()
+        self.level.setup()
 
-        # Create the sprite lists
-        self.wall_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-        self.rock_list = arcade.SpriteList()
-        self.gem_list = arcade.SpriteList()
-
-        # Set up the walls
-        for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
-            wall.center_x = x
-            wall.center_y = 0
-            self.wall_list.append(wall)
-
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
-            wall.center_x = x
-            wall.center_y = SCREEN_HEIGHT
-            self.wall_list.append(wall)
-
-        # Set up the walls
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
-            wall.center_x = 0
-            wall.center_y = y
-            self.wall_list.append(wall)
-
-            wall = arcade.Sprite(":resources:images/tiles/grassCenter.png",
-                                 SPRITE_SCALING_PLAYER)
-            wall.center_x = SCREEN_WIDTH
-            wall.center_y = y
-            self.wall_list.append(wall)
-
-        # Add some movable rocks
-        for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
-            rock = random.randrange(4) + 1
-            item = arcade.Sprite(f":resources:images/space_shooter/meteorGrey_big{rock}.png",
-                                 SPRITE_SCALING_PLAYER)
-            item.center_x = x
-            item.center_y = 400
-            self.rock_list.append(item)
-
-        # Add some movable coins
-        for x in range(SPRITE_SIZE * 2, SPRITE_SIZE * 13, SPRITE_SIZE):
-            items = [":resources:images/items/gemBlue.png",
-                     ":resources:images/items/gemRed.png",
-                     ":resources:images/items/coinGold.png",
-                     ":resources:images/items/keyBlue.png"]
-            item_name = random.choice(items)
-            item = arcade.Sprite(item_name,
-                                 SPRITE_SCALING_PLAYER)
-            item.center_x = x
-            item.center_y = 300
-            self.gem_list.append(item)
 
         # --- Pymunk Physics Engine Setup ---
 
@@ -146,21 +85,21 @@ class MyWindow(arcade.Window):
         # PymunkPhysicsEngine.KINEMATIC objects will move, but are assumed to be
         # repositioned by code and don't respond to physics forces.
         # Dynamic is default.
-        self.physics_engine.add_sprite_list(self.wall_list,
+        self.physics_engine.add_sprite_list(self.level.wall_list,
                                             friction=0.6,
                                             collision_type="wall",
                                             body_type=PymunkPhysicsEngine.STATIC)
 
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.rock_list,
+        self.physics_engine.add_sprite_list(self.level.rock_list,
                                             mass=2,
                                             friction=0.8,
                                             damping=0.1,
                                             collision_type="rock")
         # Create some boxes to push around.
         # Mass controls, well, the mass of an object. Defaults to 1.
-        self.physics_engine.add_sprite_list(self.gem_list,
+        self.physics_engine.add_sprite_list(self.level.gem_list,
                                             mass=0.5,
                                             friction=0.8,
                                             damping=0.4,
@@ -243,10 +182,8 @@ class MyWindow(arcade.Window):
     def on_draw(self):
         """ Draw everything """
         arcade.start_render()
-        self.wall_list.draw()
         self.bullet_list.draw()
-        self.rock_list.draw()
-        self.gem_list.draw()
+        self.level.on_draw()
         self.player.on_draw()
 
 
