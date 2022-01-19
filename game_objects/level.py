@@ -1,7 +1,7 @@
 import arcade
 import random
-from constants import *
-
+from constants.screen import WIDTH, HEIGHT
+from constants.base import SPRITE_SCALING_PLAYER, SPRITE_SIZE
 
 class Level:
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class Level:
         self.gem_list = arcade.SpriteList()
 
         # Set up the walls
-        for x in range(0, SCREEN_WIDTH + 1, SPRITE_SIZE):
+        for x in range(0, WIDTH + 1, SPRITE_SIZE):
             wall = arcade.Sprite(
                 ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
             )
@@ -30,11 +30,11 @@ class Level:
                 ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
             )
             wall.center_x = x
-            wall.center_y = SCREEN_HEIGHT
+            wall.center_y = HEIGHT
             self.wall_list.append(wall)
 
         # Set up the walls
-        for y in range(SPRITE_SIZE, SCREEN_HEIGHT, SPRITE_SIZE):
+        for y in range(SPRITE_SIZE, HEIGHT, SPRITE_SIZE):
             wall = arcade.Sprite(
                 ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
             )
@@ -45,7 +45,7 @@ class Level:
             wall = arcade.Sprite(
                 ":resources:images/tiles/grassCenter.png", SPRITE_SCALING_PLAYER
             )
-            wall.center_x = SCREEN_WIDTH
+            wall.center_x = WIDTH
             wall.center_y = y
             self.wall_list.append(wall)
 

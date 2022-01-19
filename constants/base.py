@@ -1,14 +1,10 @@
 # pylint: skip-file
 
-SCREEN_TITLE = "Dungeons and Directories"
 SPRITE_SCALING_PLAYER = 0.5
 MOVEMENT_SPEED = 5
 
 SPRITE_IMAGE_SIZE = 128
 SPRITE_SIZE = int(SPRITE_IMAGE_SIZE * SPRITE_SCALING_PLAYER)
-
-SCREEN_WIDTH = SPRITE_SIZE * 15
-SCREEN_HEIGHT = SPRITE_SIZE * 10
 
 # Physics force used to move the player. Higher number, faster accelerating.
 PLAYER_MOVE_FORCE = 4000
