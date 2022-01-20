@@ -17,6 +17,10 @@ class Level:
         self.rock_list = arcade.SpriteList()
         self.gem_list = arcade.SpriteList()
 
+
+        arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
+
+
         # Set up the walls
         for x in range(0, WIDTH + 1, SPRITE_SIZE):
             wall = arcade.Sprite(
@@ -72,7 +76,9 @@ class Level:
             item = arcade.Sprite(item_name, SPRITE_SCALING_PLAYER)
             item.center_x = x
             item.center_y = 300
-            self.gem_list.append(item)
+            self.gem_list.append(
+                
+            )
 
     def on_draw(self):
         self.wall_list.draw()
